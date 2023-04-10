@@ -17,7 +17,7 @@ const configuration = new Configuration({
 });
 
 const openai = new OpenAIApi(configuration);
-const history = [];
+let history = [];
 
 //socket.io instantiation
 const io = require("socket.io")(server);
