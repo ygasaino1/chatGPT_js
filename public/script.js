@@ -82,7 +82,7 @@ input.addEventListener("keydown", function(event) { // enter
 
 function key_request() {
     need_key = true;
-    output.innerText = output.innerText + `\nENTER KEY: `;
+    output.innerText = output.innerText + `\n\nENTER KEY: `;
     snapshot = output.innerText;
 }
 socket.on('cli_key', d => {
@@ -96,3 +96,11 @@ socket.on('cli_out', data => { //data is a string
         }
     } catch {}
 });
+// socket.on('cli_history', data => {
+//     try {
+//         let temp = document.createElement('div');
+//         temp.id = "history";
+//         temp.innerText = data;
+//         output.innerHTML = output.innerHTML + temp.outerHTML;
+//     } catch {}
+// })

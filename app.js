@@ -1,8 +1,8 @@
 const express = require("express");
 const app = express();
 const port = 3000;
-
 let cli_cache = {};
+
 
 //middlewares
 app.use(express.static("public"));
@@ -11,6 +11,8 @@ const server = app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
 
+
+//----------------chatGpt:
 const { Configuration, OpenAIApi } = require("openai");
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
@@ -19,7 +21,28 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 let history = [];
 
-//socket.io instantiation
+async function user_input_func(user_input) {
+    history.push({ role: "user", content: user_input });
+    try {
+        const completion = await openai.createChatCompletion({
+            model: "gpt-3.5-turbo",
+            messages: history,
+        });
+
+        const completion_text = completion.data.choices[0].message.content;
+        console.log(completion_text + "\n");
+        history.push({ role: "assistant", content: completion_text });
+    } catch (error) {
+        // Consider adjusting the error handling logic for your use case
+        if (error.response) {
+            console.error(error.response.status, error.response.data);
+        } else {
+            console.error(`Error with OpenAI API request: ${error.message}`);
+        }
+    }
+}
+
+//----------------socket.io instantiation
 const io = require("socket.io")(server);
 io.on("connection", (socket) => {
     const originalStdoutWrite = process.stdout.write;
@@ -35,32 +58,19 @@ io.on("connection", (socket) => {
         originalStderrWrite.apply(process.stderr, [chunk, encoding, callback]);
     };
 
-    //----------------chatGpt:
-    async function user_input_func(user_input) {
-        let messages = [];
-        messages = history;
-        messages.push({ role: "user", content: user_input });
-        try {
-            const completion = await openai.createChatCompletion({
-                model: "gpt-3.5-turbo",
-                messages: messages,
-            });
-
-            const completion_text = completion.data.choices[0].message.content;
-            console.log(completion_text);
-            history.push({ role: "user", content: user_input }, { role: "assistant", content: completion_text });
-        } catch (error) {
-            // Consider adjusting the error handling logic for your use case
-            if (error.response) {
-                console.error(error.response.status, error.response.data);
-            } else {
-                console.error(`Error with OpenAI API request: ${error.message}`);
-            }
-        }
-    }
     //----------------CONSOLE---------------------------->
     socket.on("cli_init", (d) => {
         console.log("💻 CLI/Console Connected! 🤦‍♀️");
+        let temp = "";
+
+        history.forEach(msg => {
+            try {
+                temp += msg.role == 'user' ? '\n>' : '\n';
+                temp += msg.content;
+            } catch (e) {}
+        })
+        if (temp == "") { temp = "No Previous Chat Available." }
+        socket.emit("cli_out", `\nCHAT HISTORY:\n${temp}`);
         socket.emit("cli_key", "");
     });
     socket.on("cli_in", (d) => {
