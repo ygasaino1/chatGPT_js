@@ -49,6 +49,7 @@ input.addEventListener("keydown", function(event) { // enter
             output.innerText = output.innerText + " :SAVED"
         } else if (cmd == "clear") {
             output.innerText = "";
+            socket.emit('cli_in', { key: console_key, cmd: cmd, role: "clear" });
         } else {
             output.innerText = output.innerText + `\n> ${input.value}`;
             try {
