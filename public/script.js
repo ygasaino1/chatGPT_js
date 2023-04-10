@@ -46,6 +46,7 @@ input.addEventListener("keydown", function(event) { // enter
         if (need_key) {
             console_key = cmd;
             need_key = false;
+            output.innerText = output.innerText + " :SAVED"
         } else if (cmd == "clear") {
             output.innerText = "";
         } else {
