@@ -37,16 +37,10 @@ io.on("connection", (socket) => {
 
     //----------------chatGpt:
     async function user_input_func(user_input) {
-        const messages = [];
-        // for (let [input_text, completion_text] of history) {
-        //     messages.push({ role: "user", content: input_text });
-        //     messages.push({ role: "assistant", content: completion_text });
-        // }
-        history.forEach(msg => { messages.push(msg) });
+        let messages = [];
+        messages = history;
         messages.push({ role: "user", content: user_input });
-
         try {
-            // console.log(messages);
             const completion = await openai.createChatCompletion({
                 model: "gpt-3.5-turbo",
                 messages: messages,
@@ -54,7 +48,7 @@ io.on("connection", (socket) => {
 
             const completion_text = completion.data.choices[0].message.content;
             console.log(completion_text);
-            history.push([{ role: "user", content: user_input }, { role: "assistant", content: completion_text }]);
+            history.push({ role: "user", content: user_input }, { role: "assistant", content: completion_text });
         } catch (error) {
             // Consider adjusting the error handling logic for your use case
             if (error.response) {
@@ -80,7 +74,7 @@ io.on("connection", (socket) => {
                         } else if (d["role"] == "user") {
                             user_input_func(d["cmd"]);
                         } else if (d["role"] == "system") {
-                            history.push({ role: "user", content: d["cmd"] });
+                            history.push({ role: "system", content: d["cmd"] });
                             socket.emit("cli_out", `# SYSTEM: ${d["cmd"]}`);
                         }
                     } catch (e) {
