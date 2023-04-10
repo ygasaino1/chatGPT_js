@@ -15,7 +15,7 @@ const { Configuration, OpenAIApi } = require("openai");
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
 });
-console.log(configuration);
+
 const openai = new OpenAIApi(configuration);
 const history = [];
 
@@ -70,10 +70,15 @@ io.on("connection", (socket) => {
     });
     socket.on("cli_in", (d) => {
         try {
-            if ("key" in d && "cmd" in d) {
+            if ("key" in d && "cmd" in d && "role" in d) {
                 if (d["key"] == process.env.CONSOLE_KEY) {
                     try {
-                        user_input_func(d["cmd"]);
+                        if (d["type"] == "user") {
+                            user_input_func(d["cmd"]);
+                        } else if (d["role"] == "system") {
+                            messages.push({ role: "user", content: d["cmd"] });
+                            socket.emit("cli_out", `SYSTEM: ${d["cmd"]}`);
+                        }
                     } catch (e) {
                         socket.emit("cli_out", e.toString());
                     }

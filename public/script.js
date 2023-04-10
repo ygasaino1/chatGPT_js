@@ -53,8 +53,8 @@ input.addEventListener("keydown", function(event) { // enter
             output.innerText = output.innerText + `\n> ${input.value}`;
             try {
                 if (event.shiftKey) {
-                    socket.emit('cli_in', { key: console_key, cmd: `console.log(${cmd})` });
-                } else { socket.emit('cli_in', { key: console_key, cmd: cmd }); }
+                    socket.emit('cli_in', { key: console_key, cmd: cmd, role: "system" });
+                } else { socket.emit('cli_in', { key: console_key, cmd: cmd, role: "user" }); }
             } catch {}
         }
         output.scrollIntoView(0);
