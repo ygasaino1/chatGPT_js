@@ -41,7 +41,10 @@ document.addEventListener("keydown", function() {
 input.addEventListener("keydown", function(event) { // enter
     if (event.key === "Enter") {
         event.preventDefault();
-        if (input.value == "") { return; }
+        if (input.value == "") {
+            output.innerText = output.innerText + "\n#";
+            return;
+        }
         let cmd = input.value;
         if (need_key) {
             console_key = cmd;
