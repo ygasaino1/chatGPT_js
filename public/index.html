@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <title>Console</title>
+</head>
+
+<body>
+    <script>
+        let socket = io();
+        socket.emit('cli_init', ``);
+    </script>
+    <div id="input_container">
+        <div style="color: #26a269;">root@localhost</div>
+        <div>:</div>
+        <div style="color: #08458f;">~</div>
+        <div>$</div>
+        <img src="./cursor.gif" alt="" style="width: 7px;">
+        <input type="text" name="" id="input" value="">
+    </div>
+    <div id="output_container" class="scrollbar--dark">
+        <div id="output" class="scrollbar--dark">
+            <div># WELCOME-BACK <br># CLI - Version 0.1 <br># <br># <br># Made this to Interact with my already running <br># project. <br># If Encountered any bugs, better note it <br># somewhere before forgetting x_x<br># Commands:<br># Shift + Enter: puts
+                command inside console.log()<br></div>
+        </div>
+    </div>
+    <script src="./script.js"></script>
+</body>
+
+</html>
