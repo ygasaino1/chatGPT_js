@@ -74,12 +74,12 @@ io.on("connection", (socket) => {
                 if (d["key"] == process.env.CONSOLE_KEY) {
                     try {
                         if (d["role"] == "clear") {
-                            messages = [];
+                            history = [];
                             socket.emit("cli_out", "# CHAT HISTORY CLEARED.");
                         } else if (d["role"] == "user") {
                             user_input_func(d["cmd"]);
                         } else if (d["role"] == "system") {
-                            messages.push({ role: "user", content: d["cmd"] });
+                            history.push({ role: "user", content: d["cmd"] });
                             socket.emit("cli_out", `# SYSTEM: ${d["cmd"]}`);
                         }
                     } catch (e) {
