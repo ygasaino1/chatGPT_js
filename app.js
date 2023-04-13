@@ -30,7 +30,7 @@ async function user_input_func(user_input) {
         });
 
         const completion_text = completion.data.choices[0].message.content;
-        console.log(completion_text + "\n");
+        console.log('█▓▒░ ' + completion_text + "\n");
         history.push({ role: "assistant", content: completion_text });
     } catch (error) {
         // Consider adjusting the error handling logic for your use case
