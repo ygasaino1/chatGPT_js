@@ -116,6 +116,6 @@ socket.on('cli_out', data => { //data is a string
 //     } catch {}
 // })
 
-socket.on("uname", d => {
+socket.on("cli_uname", d => {
     uname.innerText = `${d}@chat-123`;
 });
