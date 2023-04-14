@@ -33,7 +33,7 @@ function cmd_cache_add(str) {
 ////////////////////////////////////////////////
 ////////////////////////////////////////////////
 
-document.addEventListener("keydown", function() {
+document.addEventListener("keydown", function(event) {
     if (event.key === "Enter" & document.activeElement != input) {
         input.focus();
     }
@@ -45,25 +45,32 @@ input.addEventListener("keydown", function(event) { // enter
             output.innerText = output.innerText + "\n#";
             return;
         }
-        let cmd = input.value;
+        let content = input.value;
         if (need_key) {
-            console_key = cmd;
+            console_key = content;
             need_key = false;
             output.innerText = output.innerText + " :SAVED"
-        } else if (cmd == "clear") {
+            socket.emit('cli_key_check', { "key": content });
+        } else if (content.toLowerCase() == "/clear") {
             output.innerText = "";
-            socket.emit('cli_in', { key: console_key, cmd: cmd, role: "clear" });
+            socket.emit('cli_in', { key: console_key, cmd: "clear", role: "user", content: "" });
         } else {
             output.innerText = output.innerText + `\n> ${input.value}`;
             try {
                 if (event.shiftKey) {
-                    socket.emit('cli_in', { key: console_key, cmd: cmd, role: "system" });
-                } else { socket.emit('cli_in', { key: console_key, cmd: cmd, role: "user" }); }
+                    let role = prompt("Direct Data Injection\nEnter Role Name (system / user / assistant)", "assistant");
+                    role = role.toLowerCase();
+                    if (role != null && (role == "system" || role == "user" || role == "assistant")) {
+                        socket.emit('cli_in', { key: console_key, cmd: "direct", role: role, content: content });
+                    }
+                } else {
+                    socket.emit('cli_in', { key: console_key, cmd: "chat", role: "user", content: content });
+                }
             } catch {}
         }
         output.scrollIntoView(0);
         input.value = "";
-        cmd_cache_add(cmd);
+        cmd_cache_add(content);
         cmd_cache_currentindex = -1;
     } else if (event.key === "ArrowUp") { // cache up
         event.preventDefault();
