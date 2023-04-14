@@ -5,6 +5,7 @@ let snapshot = "";
 let input = document.querySelector('#input');
 let output = document.querySelector('#output');
 let output_container = document.querySelector('#output_container');
+let uname = document.querySelector('#uname');
 
 input.focus();
 
@@ -114,3 +115,7 @@ socket.on('cli_out', data => { //data is a string
 //         output.innerHTML = output.innerHTML + temp.outerHTML;
 //     } catch {}
 // })
+
+socket.on("uname", d => {
+    uname.innerText = `${d}@chat-123`;
+});

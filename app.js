@@ -117,6 +117,8 @@ io.on("connection", (socket) => {
             if (user == "") {
                 socket.emit("cli_key", "");
                 return;
+            } else {
+                socket.emit("cli_uname", user);
             }
             //[SAFETY] innitiation check of each user
             if (!(user in history_new)) { history_new[user] = []; }
