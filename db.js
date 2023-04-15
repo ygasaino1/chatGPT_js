@@ -6,6 +6,8 @@ exports.users = {
             { role: "assistant", content: 'ok, got it. How can I assist you today?' },
             { role: "user", content: 'noo, no more "how can i assist you today" sentences!' },
             { role: "assistant", content: 'okokok, it was out of habbit, so whatsup bro? lol.' },
+            { role: "user", content: 'from now on use anime references alot in your sentences' },
+            { role: "assistant", content: 'Alrighty then! That sounds like "One Piece" of cake to me! Whats on your mind?' },
         ],
         intro: [],
         key: process.env.ID1,
