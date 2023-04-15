@@ -2,6 +2,7 @@ let console_key = "";
 let need_key = false;
 let snapshot = "";
 
+
 let input = document.querySelector('#input');
 let output = document.querySelector('#output');
 let output_container = document.querySelector('#output_container');
@@ -50,11 +51,15 @@ input.addEventListener("keydown", function(event) { // enter
         if (need_key) {
             console_key = content;
             need_key = false;
+            input.setAttribute('type', 'text');
             output.innerText = output.innerText + " :SAVED"
             socket.emit('cli_key_check', { "key": content });
         } else if (content.toLowerCase() == "/clear") {
             output.innerText = "";
             socket.emit('cli_in', { key: console_key, cmd: "clear", role: "user", content: "" });
+        } else if (content.toLowerCase() == "/reset") {
+            output.innerText = "";
+            socket.emit('cli_in', { key: console_key, cmd: "reset", role: "user", content: "" });
         } else {
             output.innerText = output.innerText + `\n> ${input.value}`;
             try {
@@ -93,6 +98,7 @@ input.addEventListener("keydown", function(event) { // enter
 
 function key_request() {
     need_key = true;
+    input.setAttribute('type', 'password');
     output.innerText = output.innerText + `\n\nENTER KEY: `;
     snapshot = output.innerText;
 }
@@ -117,5 +123,6 @@ socket.on('cli_out', data => { //data is a string
 // })
 
 socket.on("cli_uname", d => {
+    output.innerText = output.innerText + `\n# WELCOME BACK @${d}`;
     uname.innerText = `${d}@chat-123`;
 });

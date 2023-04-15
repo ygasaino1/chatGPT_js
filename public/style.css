@@ -39,11 +39,11 @@ div#input_container input {
     width: 100%;
 }
 
-input[type=text] {
+#input {
     border: none;
 }
 
-input[type=text]:focus {
+#input:focus {
     outline: none;
 }
 
