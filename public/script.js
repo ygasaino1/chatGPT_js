@@ -2,6 +2,22 @@ let console_key = "";
 let need_key = false;
 let snapshot = "";
 
+let input = document.querySelector('#input');
+let output = document.querySelector('#output');
+let output_container = document.querySelector('#output_container');
+let uname = document.querySelector('#uname');
+
+input.addEventListener("paste", function(event) {
+    // prevent default paste action
+    event.preventDefault();
+
+    // get pasted text from clipboard
+    var clipboardData = event.clipboardData || window.clipboardData;
+    var pastedText = clipboardData.getData('text/plain');
+    pastedText = pastedText.replaceAll('\r\n', '\\n');
+    input.value = input.value + pastedText;
+});
+
 // var hideAddressBar = function() {
 //     let body = document.body;
 //     while (body.offsetHeight >= body.scrollHeight) {
@@ -14,11 +30,6 @@ let snapshot = "";
 // });
 
 // window.addEventListener("orientationchange", hideAddressBar);
-
-let input = document.querySelector('#input');
-let output = document.querySelector('#output');
-let output_container = document.querySelector('#output_container');
-let uname = document.querySelector('#uname');
 
 input.focus();
 
@@ -69,7 +80,8 @@ input.addEventListener("keydown", function(event) { // enter
             output.innerText = output.innerText + "\n#";
             return;
         }
-        let content = input.value;
+        let content = input.value.replaceAll('\\n', '\n');
+        console.log(content);
         if (need_key) {
             console_key = content;
             need_key = false;
@@ -83,7 +95,7 @@ input.addEventListener("keydown", function(event) { // enter
             output.innerText = "";
             socket.emit('cli_in', { key: console_key, cmd: "reset", role: "user", content: "" });
         } else {
-            output.innerText = output.innerText + `\n> ${input.value}`;
+            output.innerText = output.innerText + `\n> ${content}`;
             try {
                 if (event.shiftKey) {
                     let role = prompt("Direct Data Injection\nEnter Role Name (system / user / assistant)", "assistant");
