@@ -142,7 +142,6 @@ body {
     height: 100%;
     top: 0px;
     left: 0px;
-    /* pointer-events: none; */
     justify-content: center;
     align-items: center;
     overflow: hidden;
@@ -155,6 +154,7 @@ body {
 
 #overlay.init {
     opacity: 0;
+    pointer-events: none;
 }
 
 #overlay img {
