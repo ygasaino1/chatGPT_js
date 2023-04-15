@@ -30,14 +30,16 @@ input.addEventListener("paste", function(event) {
 
 input.focus();
 
+let init_timeout = null;
 document.querySelector('#overlay img').addEventListener('load', e => {
-    setTimeout(() => {
+    init_timeout = setTimeout(() => {
         //.classList.add('init');
         document.querySelector('#overlay').classList.add('init');
         document.querySelector('#container').classList.add('init');
     }, 1000);
 });
 document.querySelector('#overlay').addEventListener('click', e => {
+    clearTimeout(init_timeout);
     setTimeout(() => {
         //.classList.add('init');
         document.querySelector('#overlay').classList.add('init');
