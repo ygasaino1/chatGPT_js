@@ -87,7 +87,7 @@ io.on("connection", (socket) => {
     }
     //----------------CONSOLE---------------------------->
     socket.on("cli_init", (d) => {
-        console.log("💻 CLI/Console Connected! 🤦‍♀️");
+        console.log(`[${clientIP}] 💻 CLI/Console Connected! 🤦‍♀️`);
         socket.emit("cli_key", "");
     });
 
