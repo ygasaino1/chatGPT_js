@@ -13,27 +13,31 @@ const server = app.listen(port, () => {
 
 let users = {
     "user1": {
-        intro: "",
+        intro: [
+            { role: "assistant", content: "what kind of tone and phrases should i use?" },
+            { role: "user", content: "just use casual pharses and try to have a friendly tone." },
+            { role: "assistant", content: "ok, got it." }
+        ],
         key: process.env.ID1,
         apiKey: process.env.OPENAI_API_KEY1
     },
     "user2": {
-        intro: "",
+        intro: [],
         key: process.env.ID2,
         apiKey: process.env.OPENAI_API_KEY1
     },
     "user3": {
-        intro: "",
+        intro: [],
         key: process.env.ID1,
         apiKey: process.env.OPENAI_API_KEY1
     },
     "user4": {
-        intro: "",
+        intro: [],
         key: process.env.ID1,
         apiKey: process.env.OPENAI_API_KEY1
     },
     "user5": {
-        intro: "",
+        intro: [],
         key: process.env.ID1,
         apiKey: process.env.OPENAI_API_KEY1
     }
@@ -45,20 +49,19 @@ const configuration = new Configuration({
 });
 
 const openai = new OpenAIApi(configuration);
-let history = [];
 let history_new = {};
 
 async function user_input_func(user_input, user, callback) {
-    history_new[user].push({ role: "user", content: user_input });
+    // history_new[user].push({ role: "user", content: user_input });
     try {
         openai.configuration.apiKey = users[user].apiKey;
         const completion = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
-            messages: history_new[user],
+            messages: [{ role: "user", content: user_input }, ...history_new[user]],
         });
 
         const completion_text = completion.data.choices[0].message.content;
-        history_new[user].push({ role: "assistant", content: completion_text });
+        history_new[user].push({ role: "user", content: user_input }, { role: "assistant", content: completion_text });
         let return_ = '█▓▒░ ' + completion_text + '\n';
         callback(return_);
     } catch (error) {
@@ -121,7 +124,9 @@ io.on("connection", (socket) => {
                 socket.emit("cli_uname", user);
             }
             //[SAFETY] innitiation check of each user
-            if (!(user in history_new)) { history_new[user] = []; }
+            if (!(user in history_new)) {
+                history_new[user] = users[user].intro;
+            }
 
             let temp = "";
             history_new[user].forEach(msg => {
