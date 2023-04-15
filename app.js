@@ -1,14 +1,11 @@
 const DATABASE = require("./db.js");
+for (let u in DATABASE.users) {
+    DATABASE.users[u].intro = [...DATABASE.users[u].intro_];
+}
 
 const express = require("express");
 const app = express();
 const port = 3000;
-
-//security parameters
-let socket_id = {};
-let socket_ip = {};
-let attempt_id = 5;
-let attempt_ip = 4;
 
 //middlewares
 app.use(express.static("public"));
@@ -17,11 +14,8 @@ const server = app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
 
-for (let u in DATABASE.users) {
-    DATABASE.users[u].intro = [...DATABASE.users[u].intro_];
-}
 
-//----------------chatGpt:
+//----------------OpenAI:
 const { Configuration, OpenAIApi } = require("openai");
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY1,
@@ -71,6 +65,12 @@ let getUser = function(d) { //{"key":"12hj4jk1"}
 
 //----------------socket.io instantiation
 const io = require("socket.io")(server);
+//security parameters
+let socket_id = {};
+let socket_ip = {};
+let attempt_id = 5;
+let attempt_ip = 4;
+
 io.on("connection", (socket) => {
 
     ////////////////SECURITY
