@@ -1,4 +1,4 @@
-export let users = {
+exports.users = {
     "user1": {
         intro_: [
             { role: "assistant", content: "what kind of tone and phrases should i use?" },

@@ -1,4 +1,4 @@
-const DATABASE = require("db.js");
+const DATABASE = require("./db.js");
 
 const express = require("express");
 const app = express();
