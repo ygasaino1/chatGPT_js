@@ -42,15 +42,6 @@ body {
     filter: blur(0px);
 }
 
-@media only screen and (max-width: 499px) {
-    div#output_container {
-        width: 100%;
-    }
-    div#input_container {
-        width: 100%;
-    }
-}
-
 
 /* -------INPUT------- */
 
@@ -163,5 +154,18 @@ body {
 }
 
 #overlay img {
+    content: url(logo1.png);
     height: 50%;
+}
+
+@media only screen and (max-width: 499px) {
+    div#output_container {
+        width: 100%;
+    }
+    div#input_container {
+        width: 100%;
+    }
+    #overlay img {
+        content: url(logo2.png);
+    }
 }
