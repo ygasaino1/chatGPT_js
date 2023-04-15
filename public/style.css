@@ -21,20 +21,31 @@ body {
     position: relative;
     display: flex;
     flex-direction: column;
+    align-items: center;
+}
+
+@media only screen and (max-width: 499px) {
+    div#output_container {
+        width: 100%;
+    }
+    div#input_container {
+        width: 100%;
+    }
 }
 
 
 /* -------INPUT------- */
 
-div#input_container {
+#input_container {
     position: relative;
     display: flex;
     /* background-color: yellow; */
     height: 20px;
+    width: 50%;
     bottom: 0%;
 }
 
-div#input_container input {
+#input_container input {
     margin: 2px;
     width: 100%;
 }
@@ -50,7 +61,7 @@ div#input_container input {
 
 /* -------OUTPUT------- */
 
-div#output_container {
+#output_container {
     display: flex;
     position: relative;
     /* background-color: orangered; */
@@ -65,13 +76,7 @@ div#output_container {
     text-align: justify;
 }
 
-@media only screen and (max-width: 499px) {
-    div#output_container {
-        width: 100%;
-    }
-}
-
-div#output_container div {
+#output_container div {
     position: relative;
     bottom: 0px;
     width: 100%;
