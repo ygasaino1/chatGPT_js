@@ -77,13 +77,14 @@ io.on("connection", (socket) => {
     socket_id[socket.id] = { attempt: 0 };
     const ipReg = /\d*.\d*.\d*.\d*/;
     let clientIP = socket.request.headers["x-forwarded-for"];
-    if (ipReg.test(clientIP)) { clientIP = clientIP.match(/\d*.\d*.\d*.\d*/)[0]; } else { clientIP = "no-ip"; }
-    if (!(clientIP in socket_ip)) { socket_ip[clientIP] = { id: null, attempt: 0 }; }
-    if (clientIP in socket_ip && socket_ip[clientIP].attempt > attempt_ip) {
-        socket.emit("cli_out", `\n!SUSPICIOUS TRAFFIC DETECTED!\n!YOU ARE BLOCKED FROM USING MY CLIENT!\n!CLOSE YOUR TAB AND WAIT FOR A WHILE.!`);
-        socket.disconnect();
+    if (ipReg.test(clientIP)) { clientIP = clientIP.match(/\d*.\d*.\d*.\d*/)[0]; }
+    if (clientIP != null) {
+        if (!(clientIP in socket_ip)) { socket_ip[clientIP] = { id: null, attempt: 0 }; }
+        if (clientIP in socket_ip && socket_ip[clientIP].attempt > attempt_ip) {
+            socket.emit("cli_out", `\n!SUSPICIOUS TRAFFIC DETECTED!\n!YOU ARE BLOCKED FROM USING MY CLIENT!\n!CLOSE YOUR TAB AND WAIT FOR A WHILE.!`);
+            socket.disconnect();
+        }
     }
-
     //----------------CONSOLE---------------------------->
     socket.on("cli_init", (d) => {
         console.log("💻 CLI/Console Connected! 🤦‍♀️");
@@ -95,7 +96,7 @@ io.on("connection", (socket) => {
             let user = getUser(d);
             if (user == "") { //-----------------------------------WRONG Answer>
                 socket_id[socket.id].attempt += 1;
-                if (socket_ip[clientIP].id != socket.id) {
+                if (clientIP != null && socket_ip[clientIP].id != socket.id) {
                     socket_ip[clientIP].id = socket.id;
                     socket_ip[clientIP].attempt += 1;
                 }
@@ -107,6 +108,8 @@ io.on("connection", (socket) => {
                     return;
                 }
             } else { //-------------------------------------------CORRECT Answer>
+                socket_id[socket.id].attempt = 0;
+                if (clientIP != null) { socket_ip[clientIP].attempt = 0; }
                 socket.emit("cli_uname", user);
             }
             //[SAFETY] innitiation check of each user
