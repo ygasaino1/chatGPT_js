@@ -42,7 +42,7 @@ document.querySelector('#overlay').addEventListener('click', e => {
         //.classList.add('init');
         document.querySelector('#overlay').classList.add('init');
         document.querySelector('#container').classList.add('init');
-    }, 1000);
+    }, 0);
 });
 
 
