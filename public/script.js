@@ -2,6 +2,18 @@ let console_key = "";
 let need_key = false;
 let snapshot = "";
 
+// var hideAddressBar = function() {
+//     let body = document.body;
+//     while (body.offsetHeight >= body.scrollHeight) {
+//         body.style.height = `${$0.clientHeight-100}`;
+//     }
+// };
+
+// window.addEventListener("load", function() {
+//     setTimeout(hideAddressBar, 1000);
+// });
+
+// window.addEventListener("orientationchange", hideAddressBar);
 
 let input = document.querySelector('#input');
 let output = document.querySelector('#output');
@@ -10,11 +22,15 @@ let uname = document.querySelector('#uname');
 
 input.focus();
 
-setTimeout(() => {
-    //.classList.add('init');
-    document.querySelector('#overlay').classList.add('init');
-    document.querySelector('#container').classList.add('init');
-}, 1000);
+document.querySelector('#overlay img').addEventListener('load', e => {
+    setTimeout(() => {
+        //.classList.add('init');
+        document.querySelector('#overlay').classList.add('init');
+        document.querySelector('#container').classList.add('init');
+    }, 1000);
+});
+
+
 
 ////////////////////////////////////////////////
 ////////////////////////////////////////////////

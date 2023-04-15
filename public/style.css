@@ -154,7 +154,7 @@ body {
 }
 
 #overlay img {
-    content: url(logo1.png);
+    content: url(./img/logo1.png);
     height: 50%;
 }
 
@@ -166,6 +166,6 @@ body {
         width: 100%;
     }
     #overlay img {
-        content: url(logo2.png);
+        content: url(./img/logo2.png);
     }
 }
