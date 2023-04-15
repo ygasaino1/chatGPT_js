@@ -116,7 +116,7 @@ io.on("connection", (socket) => {
             if (!(user in history)) { history[user] = []; }
 
             let temp = "";
-            [...DATABASE.users[user].intro, ...history[user]].forEach(msg => {
+            history[user].forEach(msg => {
                 try {
                     temp += msg.role == 'user' ? '\n\n> ' : '\n█▓▒░ ';
                     temp += msg.content;
