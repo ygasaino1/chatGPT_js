@@ -12,10 +12,6 @@
 </head>
 
 <body>
-    <script>
-        let socket = io();
-        socket.emit('cli_init', ``);
-    </script>
     <div id="container">
         <div id="input_container">
             <div id="uname" style="color: #26a269; white-space: nowrap;">guest@chat-123</div>
@@ -34,6 +30,10 @@
     <div id="overlay">
         <img src="./img/logo2.png" alt="">
     </div>
+    <script>
+        let socket = io();
+        socket.emit('cli_init', ``);
+    </script>
     <script src="./script.js"></script>
 </body>
 
