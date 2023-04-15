@@ -10,6 +10,12 @@ let uname = document.querySelector('#uname');
 
 input.focus();
 
+setTimeout(() => {
+    //.classList.add('init');
+    document.querySelector('#overlay').classList.add('init');
+    document.querySelector('#container').classList.add('init');
+}, 1000);
+
 ////////////////////////////////////////////////
 ////////////////////////////////////////////////
 ////////////////////////////////////////////////

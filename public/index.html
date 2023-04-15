@@ -16,18 +16,23 @@
         let socket = io();
         socket.emit('cli_init', ``);
     </script>
-    <div id="input_container">
-        <div id="uname" style="color: #26a269; white-space: nowrap;">guest@chat-123</div>
-        <div>:</div>
-        <div style="color: #08458f;">~</div>
-        <div>$</div>
-        <img src="./cursor.gif" alt="" style="width: 7px;">
-        <input type="text" name="" id="input" value="">
-    </div>
-    <div id="output_container" class="scrollbar--dark">
-        <div id="output" class="scrollbar--dark">
-            <div># WELCOME-BACK <br># CLI - Version 0.1 <br>#<br>#<br># Enter > normal chat flow<br># Shift + Enter > direct data injection<br># Type /clear to delete all chat history<br># Type /reset to go back to default data</div>
+    <div id="container">
+        <div id="input_container">
+            <div id="uname" style="color: #26a269; white-space: nowrap;">guest@chat-123</div>
+            <div>:</div>
+            <div style="color: #08458f;">~</div>
+            <div>$</div>
+            <img src="./cursor.gif" alt="" style="width: 7px;">
+            <input type="text" name="" id="input" value="">
         </div>
+        <div id="output_container" class="scrollbar--dark">
+            <div id="output" class="scrollbar--dark">
+                <div># WELCOME-BACK <br># CLI - Version 0.1 <br>#<br>#<br># Enter > normal chat flow<br># Shift + Enter > direct data injection<br># Type /clear to delete all chat history<br># Type /reset to go back to default data</div>
+            </div>
+        </div>
+    </div>
+    <div id="overlay">
+        <img src="./logo1.png" alt="">
     </div>
     <script src="./script.js"></script>
 </body>
