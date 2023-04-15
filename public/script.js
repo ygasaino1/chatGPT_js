@@ -8,10 +8,7 @@ let output_container = document.querySelector('#output_container');
 let uname = document.querySelector('#uname');
 
 input.addEventListener("paste", function(event) {
-    // prevent default paste action
     event.preventDefault();
-
-    // get pasted text from clipboard
     var clipboardData = event.clipboardData || window.clipboardData;
     var pastedText = clipboardData.getData('text/plain');
     pastedText = pastedText.replaceAll('\r\n', '\\n');
@@ -34,6 +31,13 @@ input.addEventListener("paste", function(event) {
 input.focus();
 
 document.querySelector('#overlay img').addEventListener('load', e => {
+    setTimeout(() => {
+        //.classList.add('init');
+        document.querySelector('#overlay').classList.add('init');
+        document.querySelector('#container').classList.add('init');
+    }, 1000);
+});
+document.querySelector('#overlay').addEventListener('click', e => {
     setTimeout(() => {
         //.classList.add('init');
         document.querySelector('#overlay').classList.add('init');
