@@ -131,7 +131,7 @@ io.on("connection", (socket) => {
     if (ipReg.test(clientIP)) { clientIP = clientIP.match(/\d*.\d*.\d*.\d*/)[0]; } else { clientIP = "no-ip"; }
     if (!(clientIP in socket_ip)) { socket_ip[clientIP] = { id: null, attempt: 0 }; }
     if (clientIP in socket_ip && socket_ip[clientIP].attempt > attempt_ip) {
-        socket.emit("cli_out", `\n!SUSPICIOUS TRAFFIC DETECTED!\n!YOU ARE BLOCKED FROM USING MY CLIENT FOR A WHILE!\n`);
+        socket.emit("cli_out", `\n!SUSPICIOUS TRAFFIC DETECTED!\n!YOU ARE BLOCKED FROM USING MY CLIENT!\n!CLOSE YOUR TAB AND WAIT FOR A WHILE.!`);
         socket.disconnect();
     }
 
