@@ -1,13 +1,14 @@
+const DATABASE = require("db.js");
+
 const express = require("express");
 const app = express();
 const port = 3000;
-let cli_cache = {};
 
+//security parameters
 let socket_id = {};
 let socket_ip = {};
 let attempt_id = 5;
 let attempt_ip = 4;
-
 
 //middlewares
 app.use(express.static("public"));
@@ -16,46 +17,8 @@ const server = app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
 
-let users = {
-    "user1": {
-        intro_: [
-            { role: "assistant", content: "what kind of tone and phrases should i use?" },
-            { role: "user", content: "just use casual pharses and try to have a friendly tone." },
-            { role: "assistant", content: "ok, got it. How can I assist you today?" },
-            { role: "user", content: "noo, no more how can i assist you today sentences!" },
-            { role: "assistant", content: "okokok, it was out of habbit lol, i totaly got it." },
-        ],
-        intro: [],
-        key: process.env.ID1,
-        apiKey: process.env.OPENAI_API_KEY1
-    },
-    "user2": {
-        intro_: [],
-        intro: [],
-        key: process.env.ID2,
-        apiKey: process.env.OPENAI_API_KEY1
-    },
-    "user3": {
-        intro_: [],
-        intro: [],
-        key: process.env.ID3,
-        apiKey: process.env.OPENAI_API_KEY1
-    },
-    "user4": {
-        intro_: [],
-        intro: [],
-        key: process.env.ID4,
-        apiKey: process.env.OPENAI_API_KEY1
-    },
-    "user5": {
-        intro_: [],
-        intro: [],
-        key: process.env.ID5,
-        apiKey: process.env.OPENAI_API_KEY1
-    }
-};
-for (let u in users) {
-    users[u].intro = [...users[u].intro_];
+for (let u in DATABASE.users) {
+    DATABASE.users[u].intro = [...DATABASE.users[u].intro_];
 }
 
 //----------------chatGpt:
@@ -65,19 +28,19 @@ const configuration = new Configuration({
 });
 
 const openai = new OpenAIApi(configuration);
-let history_new = {};
+let history = {};
 
 async function user_input_func(user_input, user, callback) {
     // history_new[user].push({ role: "user", content: user_input });
     try {
-        openai.configuration.apiKey = users[user].apiKey;
+        openai.configuration.apiKey = DATABASE.users[user].apiKey;
         const completion = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
-            messages: [...users[user].intro, ...history_new[user], { role: "user", content: user_input }],
+            messages: [...DATABASE.users[user].intro, ...history[user], { role: "user", content: user_input }],
         });
 
         const completion_text = completion.data.choices[0].message.content;
-        history_new[user].push({ role: "user", content: user_input }, { role: "assistant", content: completion_text });
+        history[user].push({ role: "user", content: user_input }, { role: "assistant", content: completion_text });
         let return_ = '█▓▒░ ' + completion_text + '\n';
         callback(return_);
     } catch (error) {
@@ -92,29 +55,13 @@ async function user_input_func(user_input, user, callback) {
     }
 }
 
-//----------------socket.io instantiation
-const io = require("socket.io")(server);
-
-//////STDin/out
-// const originalStdoutWrite = process.stdout.write;
-// const originalStderrWrite = process.stderr.write;
-
-// process.stdout.write = (chunk, encoding, callback) => {
-//     io.emit("cli_out", chunk.toString());
-//     originalStdoutWrite.apply(process.stdout, [chunk, encoding, callback]);
-// };
-
-// process.stderr.write = (chunk, encoding, callback) => {
-//     io.emit("cli_out", chunk.toString());
-//     originalStderrWrite.apply(process.stderr, [chunk, encoding, callback]);
-// };
 
 let getUser = function(d) { //{"key":"12hj4jk1"}
     let user = "";
     try {
         if (!("key" in d)) { return ""; }
-        for (let uName in users) {
-            if (users[uName].key == d.key) { user = uName; }
+        for (let uName in DATABASE.users) {
+            if (DATABASE.users[uName].key == d.key) { user = uName; }
         }
         return user;
     } catch (e) {
@@ -122,6 +69,8 @@ let getUser = function(d) { //{"key":"12hj4jk1"}
     }
 }
 
+//----------------socket.io instantiation
+const io = require("socket.io")(server);
 io.on("connection", (socket) => {
 
     ////////////////SECURITY
@@ -161,10 +110,10 @@ io.on("connection", (socket) => {
                 socket.emit("cli_uname", user);
             }
             //[SAFETY] innitiation check of each user
-            if (!(user in history_new)) { history_new[user] = []; }
+            if (!(user in history)) { history[user] = []; }
 
             let temp = "";
-            [...users[user].intro, ...history_new[user]].forEach(msg => {
+            [...DATABASE.users[user].intro, ...history[user]].forEach(msg => {
                 try {
                     temp += msg.role == 'user' ? '\n\n> ' : '\n█▓▒░ ';
                     temp += msg.content;
@@ -182,7 +131,7 @@ io.on("connection", (socket) => {
             let user = getUser(d);
             if (user == "") { return; }
             //[SAFETY] innitiation check of each user
-            if (!(user in history_new)) { history_new[user] = []; }
+            if (!(user in history)) { history[user] = []; }
 
             if (!("cmd" in d)) { return; }
             if (!("role" in d)) { return; }
@@ -190,14 +139,14 @@ io.on("connection", (socket) => {
             // now list of commands:
             try {
                 if (d["cmd"] == "clear") {
-                    users[user].intro = [];
-                    history_new[user] = [];
+                    DATABASE.users[user].intro = [];
+                    history[user] = [];
                     socket.emit("cli_out", `# [${user}]: CHAT HISTORY IS EMPTY.`);
                 } else if (d["cmd"] == "reset") {
-                    users[user].intro = [...users[user].intro_];
-                    history_new[user] = [];
+                    DATABASE.users[user].intro = [...DATABASE.users[user].intro_];
+                    history[user] = [];
                     let temp = "";
-                    users[user].intro.forEach(msg => {
+                    DATABASE.users[user].intro.forEach(msg => {
                         try {
                             temp += msg.role == 'user' ? '\n\n> ' : '\n█▓▒░ ';
                             temp += msg.content;
@@ -206,7 +155,7 @@ io.on("connection", (socket) => {
                     socket.emit("cli_out", `\nCHAT HISTORY:\n${temp}\n`);
                 } else if (d["cmd"] == "direct") {
                     let temp = { role: d['role'], content: d['content'] }
-                    history_new[user].push(temp);
+                    history[user].push(temp);
                     socket.emit("cli_out", JSON.stringify(temp, null, 2));
                 } else if (d["cmd"] == "chat") {
                     user_input_func(d['content'], user, (comp) => {
